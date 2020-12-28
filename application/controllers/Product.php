@@ -10,6 +10,7 @@ class Product extends RestController {
         // Construct the parent class
         parent::__construct();
         $this->load->model('Product_model');
+        
     }
 
    public function index_get(){

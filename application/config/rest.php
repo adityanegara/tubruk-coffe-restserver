@@ -110,7 +110,7 @@ $config['rest_realm'] = 'REST API';
 |           authorization key
 |
 */
-$config['rest_auth'] = false;
+$config['rest_auth'] = 'basic';
 
 /*
 |--------------------------------------------------------------------------
@@ -126,7 +126,7 @@ $config['rest_auth'] = false;
 | Note: If 'rest_auth' is set to 'session' then change 'auth_source' to the name of the session variable
 |
 */
-$config['auth_source'] = 'ldap';
+$config['auth_source'] = '';
 
 /*
 |--------------------------------------------------------------------------
@@ -175,14 +175,18 @@ $config['auth_library_function'] = '';
 |           $config['auth_override_class_method']['accounts']['user'] = 'basic';
 |           $config['auth_override_class_method']['dashboard']['*'] = 'none|digest|basic';
 |
-| Here 'deals', 'accounts' and 'dashboard' are controller names, 'view', 'insert' and 'user' are methods within. An asterisk may also be used to specify an authentication method for an entire classes methods. Ex: $config['auth_override_class_method']['dashboard']['*'] = 'basic'; (NOTE: leave off the '_get' or '_post' from the end of the method name)
+| Here 'deals', 'accounts' and 'dashboard' are controller names, 'view', 'insert' and 'user' are methods within. An asterisk may also be used to specify an authentication method for an entire classes methods. Ex: $config['auth_override_class_method']['dashboard']['*'] = 'basic'; (NOTE: )
 | Acceptable values are; 'none', 'digest' and 'basic'.
 |
 */
 // $config['auth_override_class_method']['deals']['view'] = 'none';
 // $config['auth_override_class_method']['deals']['insert'] = 'digest';
 // $config['auth_override_class_method']['accounts']['user'] = 'basic';
-// $config['auth_override_class_method']['dashboard']['*'] = 'basic';
+
+// $config['auth_override_class_method']['product']['index']['post'] = 'basic';
+// $config['auth_override_class_method']['product']['index']['put'] = 'basic';
+// $config['auth_override_class_method']['product']['index']['delete'] = 'none';
+// $config['auth_override_class_method']['product']['index']['get'] = 'none';
 
 // ---Uncomment list line for the wildard unit test
 // $config['auth_override_class_method']['wildcard_test_cases']['*'] = 'basic';
@@ -210,7 +214,8 @@ $config['auth_library_function'] = '';
 | Array of usernames and passwords for login, if ldap is configured this is ignored
 |
 */
-$config['rest_valid_logins'] = ['admin' => '1234'];
+$config['rest_valid_logins'] = ['admin' => '1234', 'aditya'=>'adit1514215'];
+
 
 /*
 |--------------------------------------------------------------------------
@@ -376,7 +381,7 @@ $config['rest_key_length'] = 40;
 | 2012/06/12. See RFC 6648 specification for more details
 |
 */
-$config['rest_key_name'] = 'X-API-KEY';
+$config['rest_key_name'] = 'key';
 
 /*
 |--------------------------------------------------------------------------
