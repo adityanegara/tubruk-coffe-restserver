@@ -3,11 +3,20 @@
 class Product_Model extends CI_Model{
     public function getProduct($id = null){
         if($id == null){
-            return $this->db->get('product')->result_array();
-            
+            $product =  $this->db->get('product')->result_array();
+            return $product;
         }else{
-            return $this->db->get_where('product', ['id' => $id])->result_array();
-        
+            $product =  $this->db->get_where('product', ['id' => $id])->result_array();
+            if($product[0]['category'] != 'coffee'){
+                return $product;
+            }else{
+                $this->db->select('*');
+                $this->db->from('product');
+                $this->db->join('coffee', 'product.id = coffee.product_id');
+                $this->db->where('coffee.product_id', $id);
+                $product = $this->db->get()->result_array();
+                return $product;
+            }
         }
     }
 
