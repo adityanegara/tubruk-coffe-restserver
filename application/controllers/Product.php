@@ -13,6 +13,8 @@ class Product extends RestController {
         
     }
 
+    
+
    public function index_get(){
        $id = $this->get('id');
        if($id == null){
@@ -44,7 +46,20 @@ class Product extends RestController {
            'category' => $this->post('category'),
            'description' => $this->post('description')
        ];
-        if($this->Product_model->createProduct($data) > 0){
+        $productId = $this->Product_model->createProduct($data);
+        if($productId > 0){
+            if($data['category'] == "coffee"){
+                $dataCoffee = [
+                    'product_id' => $productId,
+                    'coffee_origin' => $this->post('coffee_origin'),
+                    'roast_level' => $this->post('roast_level'),
+                    'taste_like' => $this->post('taste_like'),
+                    'altitude' => $this->post('altitude'),
+                    'coffee_variety' => $this->post('coffee_variety'),
+                    'processing' => $this->post('processing')
+                ];
+                $this->Product_model->createProductCoffee($dataCoffee);
+            }
             $this->response( [
                 'status' => true,
                 'messege' => 'New product has been created!'
@@ -69,6 +84,7 @@ class Product extends RestController {
             'category' => $this->put('category'),
             'description' => $this->put('description')
         ];
+        
         if($this->Product_model->updateProduct($data, $id) > 0){
             $this->response( [
                 'status' => true,
@@ -103,4 +119,23 @@ class Product extends RestController {
             }
         }
     }
+
+    public function coffee_get(){
+        $productId = $this->get('id');
+        $productCoffee = $this->Product_model->getCoffeProduct($productId);
+        if($productCoffee == true){
+            $this->response( [
+                'status' => true,
+                'data' => $productCoffee
+                ], RestController::HTTP_OK );
+        }else{
+            $this->response( [
+                'status' => false,
+                'messege' => 'product coffee not found!'
+            ], RestController::HTTP_NOT_FOUND );
+        }
+
+    }
+
+   
 }
