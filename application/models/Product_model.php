@@ -36,21 +36,22 @@ class Product_Model extends CI_Model{
         return $this->db->affected_rows();
     }
 
+    public function updateProductCoffee($dataCoffee){
+        $this->db->update('coffee', $dataCoffee, ['coffee.product_id' => $dataCoffee['product_id']]);
+        return $this->db->affected_rows();
+    }
+
     public function deleteProduct($id){
         $this->db->delete('product', ['id' => $id]);
         return $this->db->affected_rows();
     }
 
-    public function getCoffeProduct($id){
-        $this->db->select('*');
-        $this->db->from('product');
-        $this->db->join('coffee', 'product.id = coffee.product_id');
-        $this->db->where('coffee.product_id', $id);
-        $query = $this->db->get()->result_array();
-        return $query;
-
-        
+    public function deleteCoffee($productId){
+        $this->db->delete('coffee', ['product_id' => $productId]);
+        return $this->db->affected_rows();
     }
+
+  
 
 
 }
