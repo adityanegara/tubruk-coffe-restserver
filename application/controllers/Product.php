@@ -13,13 +13,22 @@ class Product extends RestController {
         
     }
 
-    
+  
 
    public function index_get(){
        $id = $this->get('id');
-       if($id == null){
+       $limit = $this->get('limit');
+       $start = $this->get('start');
+       $count = $this->get('count');
+       if($id == null && $limit == null && $start == null && $count == null){
             $product = $this->Product_model->getProduct();
-       }else{
+       }
+       else if($limit != null && $start != null){
+            $product = $this->Product_model->getProduct($id, $limit, $start);
+       }else if($count != null){
+            $product = $this->Product_model->countProduct();
+       }
+       else{
             $product = $this->Product_model->getProduct($id);
        }
        if($product == true){
@@ -34,6 +43,8 @@ class Product extends RestController {
         ], RestController::HTTP_NOT_FOUND );
        }
    }
+
+  
 
    public function index_post(){
        $data = [
