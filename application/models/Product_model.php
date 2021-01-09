@@ -1,31 +1,47 @@
 <?php
 
 class Product_Model extends CI_Model{
-    public function getProduct($id = null, $limit = null, $start = null){
+    public function getProduct($id = null, $limit = null, $start = null, $keyword = null){
         if($id == null && $limit == null && $start == null ){
-            $product =  $this->db->get('product')->result_array();
-            return $product;
+            $data['product'] =   $this->db->get('product')->result_array();
+            $data['affacted_rows'] = $this->db->affected_rows();
+            $data['query'] = $this->db->last_query();
+            return $data;
         }else if($limit != null && $start != null){
-            $product = $this->db->get('product', $limit, $start)->result_array();
-            return $product;
+            if($keyword != null){
+                $data['product'] = $this->db->like('name', $keyword);
+            }
+            $data['product'] = $this->db->get('product', $limit, $start)->result_array();
+            $data['affacted_rows'] = $this->db->affected_rows();
+            $data['query'] = $this->db->last_query();
+            return $data;
         }
         else{
-            $product =  $this->db->get_where('product', ['id' => $id])->result_array();
-            if($product[0]['category'] != 'coffee'){
-                return $product;
+            $data['product'] =  $this->db->get_where('product', ['id' => $id])->result_array();
+            if($data['product'][0]['category'] != 'coffee'){
+                $data['affacted_rows'] = $this->db->affected_rows();
+                $data['query'] = $this->db->last_query();
+                return $data;
             }else{
                 $this->db->select('*');
                 $this->db->from('product');
                 $this->db->join('coffee', 'product.id = coffee.product_id');
                 $this->db->where('coffee.product_id', $id);
-                $product = $this->db->get()->result_array();
-                return $product;
+                $data['product'] = $this->db->get()->result_array();
+                $data['affacted_rows'] = $this->db->affected_rows();
+                $data['query'] = $this->db->last_query();
+                return $data;
             }
         }
     }
 
-    public function countProduct(){
-        return $this->db->get('product')->num_rows();
+    public function countProduct($keyword = null){
+        $this->db->like('name', $keyword);
+        $this->db->from('product');
+        $data['product'] =  $this->db->count_all_results();
+        $data['affacted_rows'] = $this->db->affected_rows();
+        $data['query'] = $this->db->last_query();
+        return $data;
     }
 
     public function createProduct($data){

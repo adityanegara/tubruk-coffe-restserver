@@ -20,13 +20,15 @@ class Product extends RestController {
        $limit = $this->get('limit');
        $start = $this->get('start');
        $count = $this->get('count');
+       $keyword = $this->get('keyword');
        if($id == null && $limit == null && $start == null && $count == null){
             $product = $this->Product_model->getProduct();
+           
        }
        else if($limit != null && $start != null){
-            $product = $this->Product_model->getProduct($id, $limit, $start);
+            $product = $this->Product_model->getProduct($id, $limit, $start, $keyword);
        }else if($count != null){
-            $product = $this->Product_model->countProduct();
+            $product = $this->Product_model->countProduct($keyword);
        }
        else{
             $product = $this->Product_model->getProduct($id);
@@ -34,7 +36,9 @@ class Product extends RestController {
        if($product == true){
         $this->response( [
             'status' => true,
-            'data' => $product
+            'query' => $product['query'],
+            'affacted_rows' => $product['affacted_rows'],
+            'data' => $product['product']
             ], RestController::HTTP_OK );
        }else{
         $this->response( [
