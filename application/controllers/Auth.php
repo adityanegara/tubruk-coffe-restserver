@@ -8,12 +8,14 @@ class Auth extends RestController {
     function __construct()
     {
         parent::__construct();
-        $this->load->model('Auth_model');   
+        $this->load->model('Auth_model');  
+        $this->email->from('testingaditnegara@gmail.com', 'Test Aditya Negara');
+       
     }
     
     public function index_get(){
         $id = $this->get('id');
-        $users = $this->Auth_model->getProduct($id);
+        $users = $this->Auth_model->getUser($id);
         if($users['users'] != null){
             $this->response( [
                 'status' => true,
@@ -41,6 +43,8 @@ class Auth extends RestController {
             'email_verified' => 0
         ];
         $user =  $this->Auth_model->createUser($data);
+        $token = $this->_generateToken($data['email']);
+        $this->_sendEmail('registration', $data['email'], $token);
         if($user['user'] != null){
             $this->response( [
                 'status' => true,
@@ -53,6 +57,33 @@ class Auth extends RestController {
                 'messege' => 'Failed to create new user!'
             ], RestController::HTTP_BAD_REQUEST );
         }
+    }
+
+    private function _generateToken($email){
+        $token = base64_encode(random_bytes(32));
+        $userToken = [
+                'email' => $email,
+                'token' => $token,
+                'date_created' => time()
+         ];  
+         $this->Auth_model->insertToken($userToken);
+         return $token;
+    }
+
+    private function _sendEmail($type, $email, $token){
+        if($type == 'registration'){
+            $data['link'] =  base_url('email/verify?email=').$email .'&token=' .urlencode($token);
+		    $data['objective'] = "Verified your email";
+            $this->email->subject('Email Verification');
+        }else{
+            $data['link'] ='https://forgotpassword';
+		    $data['objective'] = "Get your new password";
+            $this->email->subject('Forgot password');
+        }
+        $this->email->to($email);
+        $this->email->message($this->load->view('email_message', $data, true));
+        $this->email->send(); 
+       
     }
 }
 
