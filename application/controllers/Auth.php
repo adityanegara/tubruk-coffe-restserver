@@ -52,10 +52,18 @@ class Auth extends RestController {
                 'data' => $user['user']
                 ], RestController::HTTP_OK );
         }else{
-            $this->response( [
-                'status' => false,
-                'messege' => 'Failed to create new user!'
-            ], RestController::HTTP_BAD_REQUEST );
+            if($user['status'] == "Email already registered!"){
+                $this->response( [
+                    'status' => false,
+                    'messege' => $user['status']
+                ], RestController::HTTP_OK );
+            }else{
+                $this->response( [
+                    'status' => false,
+                    'messege' => 'Failed to create new user!'
+                ], RestController::HTTP_BAD_REQUEST );
+            }
+        
         }
     }
 

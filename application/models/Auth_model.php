@@ -34,11 +34,19 @@ class Auth_model extends CI_Model{
     }
 
     public function createUser($data){
-        $this->db->insert('users', $data);
-        $data['user'] = $this->db->insert_id();
-        $data['affacted_rows'] = $this->db->affected_rows();
+        if($this->getUserByEmail($data['email']) > 0){
+            $data['user'] = null;
+            $data['status'] = "Email already registered!";
+        }else{
+            $this->db->insert('users', $data);
+            $data['status'] = "Succesfully registered user!";
+            $data['user'] = $this->db->insert_id();
+            $data['affacted_rows'] = $this->db->affected_rows();
+        }
         return $data;
     }
+
+    
 
     public function insertToken($token){
         $this->db->insert('verification_token', $token);
